@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import _ from "lodash";
-import "./App.css";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { CURRENCY_TYPE, DEFAULT_STATE } from "./constant";
@@ -25,9 +23,17 @@ const Input = styled.input`
 
 const Button = styled.button`
   padding: 8px;
-  background-color: #c9a;
-  border: 1px solid #ccc;
+  margin-right: 2px;
+  border-color: #4CAF50;
+  color: green;
   border-radius: 4px;
+  &:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
+  &:focus {
+    outline:0;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -37,7 +43,9 @@ const FormContainer = styled.div`
   justify-content: center;
 `;
 
-const Image = styled.div``;
+const Image = styled.div`
+  opacity: ${props => props.opacity && '0.2' };
+`;
 
 const Content = styled.div`
   padding-top: 40px;
@@ -92,16 +100,15 @@ class App extends Component {
     const errors = [];
     if (isNaN(+value)) {
       errors.push("VALUE MUST BE NUMBER");
-    } else if (+value < 0) {
+    } if (+value < 0) {
       errors.push("VALUE MUST BE GRATHER THAN 0");
     }
 
     if (errors.length > 0) {
       this.setState({ errors });
       return false;
-    } else {
-      return true;
     }
+    return true;
   };
 
   calculating = value => {
@@ -183,8 +190,8 @@ class App extends Component {
 
   renderIcon = ({ path, name, count }) => {
     return (
-      <Image>
-        <img src={path} alt={name} height="80" width="80" />
+      <Image opacity={count === 0}>
+        <img src={path} alt={name} height="100" width="100" />
         <Text bold={count > 0}>
           {name}: {count}
         </Text>
