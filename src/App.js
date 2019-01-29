@@ -82,11 +82,6 @@ class App extends Component {
   };
 
   calRemainingValue = ({ remainingValue, currencyType, state }) => {
-    if (!_.values(CURRENCY_TYPE).find(c => c === currencyType)) {
-      throw new Error("NOT FOUND CURRENCY TYPE");
-    } else if (!_.keys(CURRENCY_TYPE).find(c => c === state)) {
-      throw new Error("NOT FOUND STATE");
-    }
     remainingValue = +remainingValue;
     const computed = ~~(remainingValue / currencyType);
     this.setState({ [state]: computed });
