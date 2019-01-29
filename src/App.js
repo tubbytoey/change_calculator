@@ -3,19 +3,7 @@ import _ from "lodash";
 import "./App.css";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-// import { Dime } from './Image'
-const CURRENCY_TYPE = {
-  hundred: 100,
-  fifty: 50,
-  twenty: 20,
-  ten: 10,
-  five: 5,
-  one: 1,
-  quarter: 0.25,
-  dime: 0.1,
-  nickel: 0.05,
-  penny: 0.01
-};
+import { CURRENCY_TYPE, DEFAULT_STATE } from "./constant";
 
 const Layout = styled.div`
   padding: 40px 160px 40px 160px;
@@ -58,21 +46,22 @@ const Content = styled.div`
   flex-wrap: wrap;
 `;
 
+const Text = styled.div`
+  font-size: 11px;
+  font-weight: ${props => props.bold ? 'bold' : 'lighter'};
+`;
+
+const Error = styled.div`
+  color: red;
+  font-size: 11px;
+  padding: 8px;
+`;
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: "",
-      hundred: 0,
-      fifty: 0,
-      twenty: 0,
-      ten: 0,
-      five: 0,
-      one: 0,
-      quarter: 0,
-      dime: 0,
-      nickel: 0,
-      penny: 0
+      ...DEFAULT_STATE
     };
   }
 
@@ -80,27 +69,22 @@ class App extends Component {
     this.setState({ input: e.target.value });
   };
 
+  onKeyPress = e => {
+    if (e.key === "Enter") {
+      this.calculating(e.target.value);
+    }
+  };
+
   onClear = () => {
     this.setState({
-      input: "",
-      hundred: 0,
-      fifty: 0,
-      twenty: 0,
-      ten: 0,
-      five: 0,
-      one: 0,
-      quarter: 0,
-      dime: 0,
-      nickel: 0,
-      penny: 0
-    })
-  }
+      ...DEFAULT_STATE
+    });
+  };
 
   calRemainingValue = ({ remainingValue, currencyType, state }) => {
     if (!_.values(CURRENCY_TYPE).find(c => c === currencyType)) {
       throw new Error("NOT FOUND CURRENCY TYPE");
-    }
-    if (!_.keys(CURRENCY_TYPE).find(c => c === state)) {
+    } else if (!_.keys(CURRENCY_TYPE).find(c => c === state)) {
       throw new Error("NOT FOUND STATE");
     }
     remainingValue = +remainingValue;
@@ -109,129 +93,163 @@ class App extends Component {
     return remainingValue - computed * currencyType;
   };
 
-  calculating = value => {
-    if (value < 0) {
-      throw new Error("VALUE MUST BE GRATHER THAN 0");
-    }
+  validateValue = value => {
+    const errors = [];
     if (isNaN(+value)) {
-      throw new Error("VALUE MUST BE NUMBER");
+      errors.push("VALUE MUST BE NUMBER");
+    } else if (+value < 0) {
+      errors.push("VALUE MUST BE GRATHER THAN 0");
     }
-    // this.setState({ input: +value.toFixed(2) });
-    console.log(">>>>>", value);
-    let remainingValue = +(+value).toFixed(2);
-    if (remainingValue > CURRENCY_TYPE["hundred"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["hundred"],
-        state: "hundred"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["fifty"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["fifty"],
-        state: "fifty"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["twenty"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["twenty"],
-        state: "twenty"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["ten"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["ten"],
-        state: "ten"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["five"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["five"],
-        state: "five"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["one"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["one"],
-        state: "one"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["quarter"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["quarter"],
-        state: "quarter"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["dime"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["dime"],
-        state: "dime"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["nickel"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["nickel"],
-        state: "nickel"
-      });
-    }
-    if (remainingValue > CURRENCY_TYPE["penny"]) {
-      remainingValue = this.calRemainingValue({
-        remainingValue,
-        currencyType: CURRENCY_TYPE["penny"],
-        state: "penny"
-      });
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return false;
+    } else {
+      return true;
     }
   };
 
-  renderIcon = ({ path, count }) => {
+  calculating = value => {
+    if (this.validateValue(value)) {
+      this.setState({ ...DEFAULT_STATE, input: +(+value).toFixed(2) });
+      let remainingValue = +(+value).toFixed(2);
+      if (remainingValue >= CURRENCY_TYPE["hundred"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["hundred"],
+          state: "hundred"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["fifty"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["fifty"],
+          state: "fifty"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["twenty"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["twenty"],
+          state: "twenty"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["ten"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["ten"],
+          state: "ten"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["five"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["five"],
+          state: "five"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["one"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["one"],
+          state: "one"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["quarter"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["quarter"],
+          state: "quarter"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["dime"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["dime"],
+          state: "dime"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["nickel"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["nickel"],
+          state: "nickel"
+        });
+      }
+      if (remainingValue >= CURRENCY_TYPE["penny"]) {
+        remainingValue = this.calRemainingValue({
+          remainingValue,
+          currencyType: CURRENCY_TYPE["penny"],
+          state: "penny"
+        });
+      }
+    }
+  };
+
+  renderIcon = ({ path, name, count }) => {
     return (
       <Image>
-        <img src={path} alt="Smiley face" height="80" width="80" />
-        <div>{count}</div>
+        <img src={path} alt={name} height="80" width="80" />
+        <Text bold={count > 0}>
+          {name}: {count}
+        </Text>
       </Image>
     );
   };
 
   render() {
-    console.log(this.state);
+    const {
+      input,
+      hundred,
+      fifty,
+      twenty,
+      ten,
+      five,
+      one,
+      quarter,
+      dime,
+      nickel,
+      penny,
+      errors
+    } = this.state;
     return (
       <Layout>
         <Header>Change Calculator</Header>
         <FormContainer>
-          <Input value={this.state.input} onChange={this.onChange} />
-          <Button onClick={() => this.calculating(this.state.input)}>
+          <Input
+            value={input}
+            onChange={this.onChange}
+            onKeyPress={this.onKeyPress}
+          />
+          <Button onClick={() => this.calculating(input)}>
             Calculate
           </Button>
 
-          <Button onClick={this.onClear}>
-            Clear
-          </Button>
+          <Button onClick={this.onClear}>Clear</Button>
         </FormContainer>
-        
+
+        <Error>{errors.length > 0 ? errors : ""}</Error>
 
         <Content>
           <Row>
-            <Col span={8}>{this.renderIcon({path: "./image/hundred.png", count: this.state.hundred})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/fifty.png", count: this.state.fifty})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/twenty.png", count: this.state.twenty})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/hundred.png", name: "hundred", count: hundred})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/one.png", name: "one", count: one})}</Col>
           </Row>
           <Row>
-            <Col span={8}>{this.renderIcon({path: "./image/ten.png", count: this.state.ten})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/one.png", count: this.state.one})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/quarter.png", count: this.state.quarter})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/fifty.png", name: "fifty", count: fifty})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/quarter.png", name: "quarter", count: quarter})}</Col>
           </Row>
           <Row>
-            <Col span={8}>{this.renderIcon({path: "./image/dime.png", count: this.state.dime})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/nickel.png", count: this.state.nickel})}</Col>
-            <Col span={8}>{this.renderIcon({path: "./image/penny.png", count: this.state.penny})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/twenty.png", name: "twenty", count: twenty})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/dime.png", name: "dime", count: dime})}</Col>
+          </Row>
+          <Row>
+            <Col span={8}>{this.renderIcon({ path: "./image/ten.png", name: "ten", count: ten})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/nickel.png", name: "nickel", count: nickel})}</Col>
+          </Row>
+          <Row>
+            <Col span={8}>{this.renderIcon({ path: "./image/five.png", name: "five", count: five})}</Col>
+            <Col span={8}>{this.renderIcon({ path: "./image/penny.png", name: "penny", count: penny})}</Col>
           </Row>
         </Content>
       </Layout>
