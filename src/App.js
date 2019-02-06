@@ -44,7 +44,7 @@ const FormContainer = styled.div`
 `;
 
 const Image = styled.div`
-  opacity: ${props => props.opacity && '0.2' };
+  opacity: ${props => props.opacity ? '0.2' : 'none' };
 `;
 
 const Content = styled.div`
