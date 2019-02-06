@@ -91,7 +91,7 @@ class App extends Component {
 
   calRemainingValue = ({ remainingValue, currencyType, state }) => {
     remainingValue = +remainingValue;
-    const computed = ~~(remainingValue / currencyType);
+    const computed = +(~~(remainingValue / currencyType).toFixed(2));
     this.setState({ [state]: computed });
     return remainingValue - computed * currencyType;
   };
