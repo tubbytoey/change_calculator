@@ -116,6 +116,7 @@ class App extends Component {
       this.setState({ ...DEFAULT_STATE, input: +(+value).toFixed(2) });
       let remainingValue = +(+value).toFixed(2);
       if (remainingValue >= CURRENCY_TYPE["hundred"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["hundred"],
@@ -123,6 +124,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["fifty"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["fifty"],
@@ -130,6 +132,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["twenty"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["twenty"],
@@ -137,6 +140,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["ten"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["ten"],
@@ -144,6 +148,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["five"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["five"],
@@ -151,6 +156,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["one"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["one"],
@@ -158,6 +164,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["quarter"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["quarter"],
@@ -165,6 +172,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["dime"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["dime"],
@@ -172,6 +180,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["nickel"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["nickel"],
@@ -179,6 +188,7 @@ class App extends Component {
         });
       }
       if (remainingValue >= CURRENCY_TYPE["penny"]) {
+        remainingValue = +remainingValue.toFixed(2)
         remainingValue = this.calRemainingValue({
           remainingValue,
           currencyType: CURRENCY_TYPE["penny"],
