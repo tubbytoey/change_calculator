@@ -44,7 +44,7 @@ const FormContainer = styled.div`
 `;
 
 const Image = styled.div`
-  opacity: ${props => props.opacity ? '0.2' : 'none' };
+  opacity: ${props => props.opacity && '0.2' };
 `;
 
 const Content = styled.div`
@@ -91,7 +91,7 @@ class App extends Component {
 
   calRemainingValue = ({ remainingValue, currencyType, state }) => {
     remainingValue = +remainingValue;
-    const computed = +(~~(remainingValue / currencyType).toFixed(2));
+    const computed = ~~(remainingValue / currencyType);
     this.setState({ [state]: computed });
     return remainingValue - computed * currencyType;
   };
