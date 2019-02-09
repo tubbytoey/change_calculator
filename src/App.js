@@ -89,6 +89,16 @@ class App extends Component {
     });
   };
 
+  computeChange = (changeArray, amount) => {
+    const result = changeArray.map(val => {
+      let changeAmount = +(~~(amount / val)).toFixed(2);
+      amount -= (val * changeAmount);
+      amount = +((amount * 100 ) / 100).toFixed(2);
+      return changeAmount
+    })
+    return result;
+  }
+
   calRemainingValue = ({ remainingValue, currencyType, state }) => {
     remainingValue = +remainingValue;
     const computed = ~~(remainingValue / currencyType);
@@ -115,86 +125,19 @@ class App extends Component {
     if (this.validateValue(value)) {
       this.setState({ ...DEFAULT_STATE, input: +(+value).toFixed(2) });
       let remainingValue = +(+value).toFixed(2);
-      if (remainingValue >= CURRENCY_TYPE["hundred"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["hundred"],
-          state: "hundred"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["fifty"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["fifty"],
-          state: "fifty"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["twenty"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["twenty"],
-          state: "twenty"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["ten"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["ten"],
-          state: "ten"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["five"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["five"],
-          state: "five"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["one"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["one"],
-          state: "one"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["quarter"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["quarter"],
-          state: "quarter"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["dime"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["dime"],
-          state: "dime"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["nickel"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["nickel"],
-          state: "nickel"
-        });
-      }
-      if (remainingValue >= CURRENCY_TYPE["penny"]) {
-        remainingValue = +remainingValue.toFixed(2)
-        remainingValue = this.calRemainingValue({
-          remainingValue,
-          currencyType: CURRENCY_TYPE["penny"],
-          state: "penny"
-        });
-      }
+      const result = this.computeChange([100, 50, 20, 10, 5, 1, 0.25, 0.1, 0.05, 0.01] ,remainingValue)
+      this.setState({ 
+        hundred: result[0],
+        fifty: result[1],
+        twenty: result[2],
+        ten: result[3],
+        five: result[4],
+        one: result[5],
+        quarter: result[6],
+        dime:  result[7],
+        nickel: result[8],
+        penny: result[9],
+       })
     }
   };
 

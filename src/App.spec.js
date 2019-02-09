@@ -183,7 +183,7 @@ describe("<App />", () => {
       expect(wrapper.state("penny")).toEqual(4);
     });
 
-    it("should call function calculating with correct params (0.99)", () => {
+    it("should call function calculating with correct params (0.9)", () => {
       const value = 0.9
 
       const mockValidateFn = jest.fn(wrapper.instance().validateValue());
@@ -198,8 +198,27 @@ describe("<App />", () => {
       expect(wrapper.state("one")).toEqual(0);
       expect(wrapper.state("quarter")).toEqual(3);
       expect(wrapper.state("dime")).toEqual(1);
+      expect(wrapper.state("nickel")).toEqual(1);
+      expect(wrapper.state("penny")).toEqual(0);
+    });
+
+    it("should call function calculating with correct params (0.11)", () => {
+      const value = 0.11
+
+      const mockValidateFn = jest.fn(wrapper.instance().validateValue());
+      mockValidateFn.mockReturnValue(true);
+
+      wrapper.instance().calculating(value)
+      expect(wrapper.state("hundred")).toEqual(0);
+      expect(wrapper.state("fifty")).toEqual(0);
+      expect(wrapper.state("twenty")).toEqual(0);
+      expect(wrapper.state("ten")).toEqual(0);
+      expect(wrapper.state("five")).toEqual(0);
+      expect(wrapper.state("one")).toEqual(0);
+      expect(wrapper.state("quarter")).toEqual(0);
+      expect(wrapper.state("dime")).toEqual(1);
       expect(wrapper.state("nickel")).toEqual(0);
-      expect(wrapper.state("penny")).toEqual(5);
+      expect(wrapper.state("penny")).toEqual(1);
     });
 
     it("should call function calculating with correct params (1)", () => {
