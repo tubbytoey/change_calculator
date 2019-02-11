@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { CURRENCY_TYPE, DEFAULT_STATE } from "./constant";
+import { DEFAULT_STATE } from "./constant";
 
 const Layout = styled.div`
   padding: 40px 160px 40px 160px;
